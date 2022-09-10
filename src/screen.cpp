@@ -167,7 +167,7 @@ void Screen::Draw(Shape* shape) {
 	const Color* colorPtr = shape->GetColor();
 	SDL_SetRenderDrawColor(renderer, colorPtr->GetRed(), colorPtr->GetGreen(), colorPtr->GetBlue(), colorPtr->GetAlpha());
 	for (int i = 0; i < shape->GetElementCount(); i++) {
-		SDL_RenderDrawPoint(renderer, shape->GetPoint(i)->x, shape->GetPoint(i)->y);
+		SDL_RenderDrawPoint(renderer, shape->GetPoint(i).x, shape->GetPoint(i).y);
 	}
 }
 
@@ -175,7 +175,7 @@ void Screen::DrawShapeFromLocalSpace(Shape* shape) {
 	const Color* colorPtr = shape->GetColor();
 	SDL_SetRenderDrawColor(renderer, colorPtr->GetRed(), colorPtr->GetGreen(), colorPtr->GetBlue(), colorPtr->GetAlpha());
 	for (int i = 0; i < shape->GetElementCount(); i++) {
-		Point2D newPoints = LocalToScreen2D(&Point2D(shape->GetPoint(i)->x, shape->GetPoint(i)->y));
+		Point2D newPoints = LocalToScreen2D(&Point2D(shape->GetPoint(i).x, shape->GetPoint(i).y));
 		SDL_RenderDrawPoint(renderer, newPoints.GetX(), newPoints.GetY());
 	}
 }
@@ -189,6 +189,4 @@ void Screen::CloseScreen() {
 
 Screen::~Screen() {
 	CloseScreen();
-	delete shapeManager;
-	shapeManager = nullptr;
 }

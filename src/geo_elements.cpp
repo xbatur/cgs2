@@ -247,17 +247,104 @@ const Color* Line2D::GetColor() const{
 	return &color;
 }
 
-Vec3<int>* Line2D::GetPoints(){
+const Vec3<int>* Line2D::GetPoints() const{
 	return points;
 }
-Vec3<int>* Line2D::GetPoint(int index) {
-	return &points[index];
+const Vec3<int>& Line2D::GetPoint(int index) const{
+	return points[index];
 }
 
-const Vec3<int>& Line2D::GetLastPoint(){
+const Vec3<int>& Line2D::GetLastPoint() const{
 	return lastPoint;
 }
 
-const Vec3<int>& Line2D::GetFirstPoint() {
+const Vec3<int>& Line2D::GetFirstPoint() const{
 	return firstPoint;
+}
+
+int Circle2D::DeAllocatePoints() {
+	if (points != nullptr) {
+		delete[] points;
+		points = nullptr;
+	}
+	return 1;
+}
+
+Circle2D::~Circle2D() {
+	DeAllocatePoints();
+}
+
+int Circle2D::PlotPoints(int x, int y, int index) {
+	points[index]   = Vec3<int>(xC + x, yC + y, 0);
+	points[index+1] = Vec3<int>(xC - x, yC + y, 0);
+	points[index+2] = Vec3<int>(xC + x, yC - y, 0);
+	points[index+3] = Vec3<int>(xC - x, yC - y, 0);
+						   
+	points[index+4] = Vec3<int>(xC + y, yC + x, 0);
+	points[index+5] = Vec3<int>(xC - y, yC + x, 0);
+	points[index+6] = Vec3<int>(xC + y, yC - x, 0);
+	points[index+7] = Vec3<int>(xC - y, yC - x, 0);
+	return 1;
+}
+
+int Circle2D::MidPoint() {
+	int x = 0;
+	int y = radius;
+	int p = 1 - radius;
+	int iterator = 0;
+	if (points == nullptr) {
+		points = new Vec3<int>[elementCount];
+	}
+	PlotPoints(x, y, iterator);
+	while (x < y) {
+		x++;
+		if (p < 0) {
+			p += 2 * x + 1;
+		}
+		else {
+			y--;
+			p += 2 * (x - y) + 1;
+		}
+		iterator += 8;
+		PlotPoints(x, y, iterator);
+	}
+	return 1;
+}
+
+int Circle2D::Draw() {
+	elementCount = 8 * radius;
+	MidPoint();
+	return 1;
+}
+int Circle2D::Rotate(float angle) {
+	return 1;
+}
+int Circle2D::Scale(const Vec3f& scaleVector) {
+	radius *= scaleVector.x;
+	DeAllocatePoints();
+	Draw();
+	return 1;
+}
+int Circle2D::Translate(const Vec3f& translateVector) {
+	for (int i = 0; i < elementCount; i++) {
+		points[i].x += translateVector.x;
+		points[i].y += translateVector.y;
+	}
+	return 1;
+}
+int Circle2D::SetColor(const Color& colorValue) {
+	color = colorValue;
+	return 1;
+}
+const Color* Circle2D::GetColor() const {
+	return &color;
+}
+int Circle2D::GetElementCount() const {
+	return elementCount;
+}
+const Vec3<int>* Circle2D::GetPoints() const {
+	return points;
+}
+const Vec3<int>& Circle2D::GetPoint(int index) const {
+	return points[index];
 }

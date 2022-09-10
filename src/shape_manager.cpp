@@ -13,6 +13,13 @@ Line2D* ShapeManager::CreateLine(const Point2D& P0, const Point2D& P1, const Col
 	return newLine;
 }
 
+Circle2D* ShapeManager::CreateCircle(const Point2D& P0, int radius, const Color& colorValue) {
+	Circle2D *newCircle = new Circle2D(P0.GetX(), P0.GetY(), radius, colorValue);
+	newCircle->Draw();
+	shapes.push_back(newCircle);
+	return newCircle;
+}
+
 int ShapeManager::AddShape(Shape* shapePtr) {
 	shapes.push_back(shapePtr);
 	return 1;

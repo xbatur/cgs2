@@ -54,8 +54,8 @@ public:
 	virtual int SetColor(const Color& colorValue) = 0;
 	virtual const Color* GetColor() const= 0;
 	virtual int GetElementCount() const = 0;
-	virtual Vec3<int>* GetPoints()= 0;
-	virtual Vec3<int>* GetPoint(int index)= 0;
+	virtual const Vec3<int>* GetPoints() const= 0;
+	virtual const Vec3<int>& GetPoint(int index) const= 0;
 	Vec3<float> *points = nullptr;
 };
 
@@ -88,6 +88,16 @@ public:
 		y1 = line.y1;
 		absdx = line.absdx;
 		absdy = line.absdy;
+		if (points != nullptr && line.points != nullptr) {
+			if (elementCount > 0) {
+				delete[] points;
+				points = nullptr;
+			}
+		}
+		points = new Vec3<int>[line.GetElementCount()];
+		for (int i = 0; i < line.GetElementCount(); i++) {
+			points[i] = line.GetPoint(i);
+		}
 	}
 	//Copy assignment.
 	Line2D& operator=(const Line2D& line) {
@@ -97,6 +107,16 @@ public:
 		y1 = line.y1;
 		absdx = line.absdx;
 		absdy = line.absdy;
+		if (points != nullptr && line.points != nullptr) {
+			if (elementCount > 0) {
+				delete[] points;
+				points = nullptr;
+			}
+		}
+		points = new Vec3<int>[line.GetElementCount()];
+		for (int i = 0; i < line.GetElementCount(); i++) {
+			points[i] = line.GetPoint(i);
+		}
 		return *this;
 	}
 	//Calculates line points and adds points variable.
@@ -118,11 +138,11 @@ public:
 	//Returns const Color*.
 	const Color* GetColor() const;
 	//Returns points (Vec3<int>*).
-	Vec3<int>* GetPoints();
-	const Vec3<int>& GetLastPoint();
-	const Vec3<int>& GetFirstPoint();
-	//Get point by index.
-	Vec3<int>* GetPoint(int index);
+	const Vec3<int>* GetPoints() const;
+	const Vec3<int>& GetLastPoint() const;
+	const Vec3<int>& GetFirstPoint() const;
+	//Get const point by index.
+	const Vec3<int>& GetPoint(int index) const;
 private:
 	//Draw line with Bresenham Line Algorithm.
 	int BresenhamLine();
@@ -138,4 +158,38 @@ private:
 	Vec3<int> lastPoint;
 	int elementCount = 0;
 };
+
+class Circle2D : public Shape{
+public:
+	Circle2D(int xCenter, int yCenter, int radius,const Color& colorValue) {
+		xC = xCenter;
+		yC = yCenter;
+		this->radius = radius;
+		color = colorValue;
+		elementCount = 8 * radius;
+		points = new Vec3<int>[elementCount];
+	}
+	~Circle2D();
+	int Draw();
+	int Rotate(float angle);
+	int Scale(const Vec3f& scaleVector);
+	int Translate(const Vec3f& translateVector);
+	int SetColor(const Color& colorValue);
+	const Color* GetColor() const;
+	int GetElementCount() const;
+	const Vec3<int>* GetPoints() const;
+	const Vec3<int>& GetPoint(int index) const;
+private:
+	//Circle draw algorithm
+	int MidPoint();
+	int PlotPoints(int x, int y, int index);
+	int DeAllocatePoints();
+	Vec3<int>* points = nullptr;
+	Color color;
+	int radius = 0;
+	int xC = 0;
+	int yC = 0;
+	int elementCount = 0;
+};
+
 #endif

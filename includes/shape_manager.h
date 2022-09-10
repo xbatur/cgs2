@@ -9,6 +9,7 @@ public:
 	Shape* GetShape(int index);
 	Shape* GetTempShape(int index);
 	Line2D* CreateLine(const Point2D& P0, const Point2D& P1, const Color& colorValue);
+	Circle2D* CreateCircle(const Point2D& P0, int radius, const Color& colorValue);
 	int AddShape(Shape* shapePtr);
 	int AddTemporaryShape(Shape* shapePtr);
 	int FreeTempShapes();
